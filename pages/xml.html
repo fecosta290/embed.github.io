@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação - Embed.it</title>
+    <link rel="stylesheet" href="../style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo">
+                <img src="../img/logo.png" alt="Logo">
+            </a>
+            <nav class="nav">
+                <a href="./index.html">HOME</a>
+                <a href="./fluxo.html">FLUXOS</a>
+                <div class="dropdown">
+                    <button class="dropdown-btn">PRODUTOS <i class="fas fa-chevron-down"></i></button>
+                    <div class="dropdown-content">
+                        <a href="./tef.html">TEF</a>
+                        <a href="./pix.html">PIX</a>
+                        <a href="./pos.html">POS</a>
+                        <a href="./xml.html">XML</a>
+                    </div>
+                </div>
+            </nav>
+            <a href="https://github.com/org-dev-embed" class="github-link" target="_blank">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+    </header>
+
+    <section id="api" class="section">
+        <h1>XML</h1>
+        <p>Veja como funciona nossa api para armazenamento de dados em XML</p>
+        <div class="produtos">
+            <button><a href="#imports">Dependencias</a></button>        
+            <button><a href="#configurar">Configurar</a></button>
+            <button><a href="#iniciar">Iniciar</a></button>
+            <button><a href="#enviar">Enviar</a></button>
+            <button><a href="#loop">Enviar Loop</a></button>
+        </div>
+    </section>
+
+    <section id="imports" class="section">
+        <h2>DEPENDENCIAS</h2>
+        <p></p>
+        <pre><code>
+            import os
+import json
+import shutil
+import warnings
+from threading import Thread
+from dotenv import load_dotenv
+from libembed import configurar, iniciar, processar, finalizar, obter_valor
+from tkinter import (
+    Button,
+    Tk,
+    Label,
+    Frame,
+    Text,
+    StringVar,
+    Scrollbar,
+    VERTICAL,
+    NSEW,
+    NS,
+    W,
+    FLAT,
+    SUNKEN,
+    END,
+    RAISED,
+)
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+        </code></pre>
+        <p><strong>OBS: </strong>Algumas dependencias são apenas para a criação das telas</p>
+    </section>
+
+    <section id="configurar" class="section">
+        <h2>CONFIGURAR</h2>
+        <p></p>
+        <pre><code>
+            def e_configurar(self):
+        self.lbl_operator_text.set("configurando produto xml")
+        
+        load_dotenv()
+
+        PRODUTO = "xml"     # produto de pagamento (atual pos)
+        SUB_PRODUTO = os.getenv('SUB_PRODUTO')   # fornecedor/banco/parceiro (atual 1)
+        TOKEN = os.getenv('TOKEN')  # token de acesso
+        EMAIL = os.getenv('EMAIL')
+        PDV = os.getenv('PDV')
+
+        # JSON 
+        input_data = {
+            "configs": {
+                "produto": PRODUTO,                                        
+                "sub_produto": SUB_PRODUTO,                                       
+                "infos": {
+                    "token": TOKEN,
+                    "email": EMAIL,
+                    "pdv": PDV
+                }
+            }
+        }
+        input_json = json.dumps(input_data)
+        res = configurar(input_json)
+
+        self.write_logs("CONFIGURAR")
+        self.write_logs(res)
+
+        result = obter_valor(res, "mensagem")
+        return result
+
+        </code></pre>
+    </section>
+
+    <section id="iniciar" class="section">
+        <h2>INICIAR</h2>
+        <p></p>
+        <pre><code>
+            def e_iniciar(self):
+        self.lbl_operator_text.set("iniciando XML")
+
+        OPERACAO = "xml" # produto que será executado (atual pos)
+
+        # JSON
+        input_data = {
+            "iniciar": {
+                "operacao": OPERACAO
+            }
+        }
+        input_json = json.dumps(input_data)
+        res = iniciar(input_json)
+
+        self.write_logs("INICIAR")
+        self.write_logs(res)
+
+        return res
+        </code></pre>
+    </section>
+
+    <section id="enviar" class="section">
+        <h2>ENVIAR</h2>
+        <p></p>
+        <pre><code>
+            def e_enviar(self):
+        self.lbl_operator_text.set("enviando XML ao server")
+
+        OPERACAO    = 'enviar_xml'                      
+        CONTENT     = self.xml_texts[0].get("1.0", END).rstrip('\n') 
+        PATH        = self.xml_texts[1].get("1.0", END).rstrip('\n')
+        ZIP         = self.xml_texts[2].get("1.0", END).rstrip('\n') 
+        LOOP        = self.xml_texts[3].get("1.0", END).rstrip('\n') 
+        print("contnet: " + self.xml_texts[0].get("1.0", END).rstrip('\n') + 
+              " path: " + self.xml_texts[1].get("1.0", END).rstrip('\n') + 
+              " zip: " + self.xml_texts[2].get("1.0", END).rstrip('\n')) 
+
+
+        # JSON 
+        if CONTENT and CONTENT != "\n":
+            input_data = {
+                "processar": {
+                    "operacao": OPERACAO,   
+                    "conteudo": CONTENT,
+                }
+            }
+        elif PATH and PATH != "\n":
+            input_data = {
+                "processar": {
+                    "operacao": OPERACAO,   
+                    "path": PATH,
+                }
+            }
+        elif ZIP and ZIP != "\n":
+            input_data = {
+                "processar": {
+                    "operacao": OPERACAO,   
+                    "zip": ZIP,
+                }
+            }
+        elif LOOP and LOOP != "\n":
+            return self.e_enviar_loop()
+        else:
+            print("Nenhum conteudo ou path informado")
+            return "Nenhum conteudo ou path informado"
+        input_json = json.dumps(input_data)
+        res = processar(input_json)
+
+        self.xml_texts[0].delete("1.0", END)
+        self.xml_texts[1].delete("1.0", END)
+        self.xml_texts[2].delete("1.0", END)
+        self.write_logs("PROCESSAR")
+        self.write_logs(res)
+        
+        message = obter_valor(res, "mensagem")
+        status_code = obter_valor(res, "resultado.status_code")
+        if status_code == "0":
+            self.lbl_operator_text.set("Enviado com Sucesso")
+            self.root.update()
+        else:
+            print("error in response ")
+            self.lbl_operator_text.set("Ocorreu algum erro ao enviar XML")
+        
+        return message
+        </code></pre>
+    </section>
+
+    <section id="loop" class="section">
+        <h2>ENVIAR LOOP</h2>
+        <p></p>
+        <pre><code>
+            def e_enviar_loop(self): 
+        diretorio   = self.xml_texts[3].get("1.0", END).rstrip('\n')
+         # Itera sobre os arquivos no diretório
+        for filename in os.listdir(diretorio):
+            self.lbl_operator_text.set("enviando arquivo " + filename)
+            filepath = os.path.join(diretorio, filename)
+            # Verifica se é um arquivo XML
+            if os.path.isfile(filepath) and filename.lower().endswith('.xml'):
+                OPERACAO    = 'enviar_xml'    
+                PATH        = filepath
+                
+                input_data = {
+                        "processar": {
+                        "operacao": OPERACAO,   
+                        "path": PATH,
+                    }
+                }
+
+                input_json = json.dumps(input_data)
+                res = processar(input_json)
+
+                self.write_logs("PROCESSAR")
+                self.write_logs(res)
+                
+                message = obter_valor(res, "mensagem")
+                status_code = obter_valor(res, "resultado.status_code")
+                if status_code == "0":
+                    self.lbl_operator_text.set("Enviado com Sucesso")
+                    self.root.update()
+                else:
+                    self.lbl_operator_text.set("erro com arquivo " + filename)
+                    shutil.move(filepath, "xmls/errors")
+
+        self.xml_texts[3].delete("1.0", END)
+        return message
+        </code></pre>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2024 - <strong><a href="https://embed.it">Embed.it</a></strong>. Todos os direitos reservados.</p>
+            </p>
+        </div>
+    </footer>
+
+    <script src="../src/index.js"></script>
+</body>
+</html>

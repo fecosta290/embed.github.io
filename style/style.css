@@ -1,0 +1,330 @@
+/* Importar a fonte Poppins do Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,600;1,300&display=swap');
+
+/* Reset de estilos e definição da fonte padrão */
+* {
+    
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Definição de variáveis de cores e tema */
+:root {
+    --themeColor: #3e974d;
+    --themeColor2: #2C2F3F;
+    --textColor: #c3d7c0;
+    --bgColor: #20232a;
+}
+
+/* Estilos gerais do body */
+body {
+    padding-top: 80px;
+    background-color: var(--bgColor);
+    color: white;
+}
+
+/* Estilo para a seção .home */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 0; /* Adiciona espaçamento interno (padding) no header */
+    background: linear-gradient(90deg, #3e974d, #0f7941); 
+    color: var(--bgColor);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    z-index: 1000; /* Z-index para manter o header acima do conteúdo */
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px; /* Adiciona espaçamento interno (padding) nos itens do header */
+}
+
+/* Estilo para a logo */
+.logo img {
+    width: 120px; /* Tamanho da logo */
+    height: auto; /* Altura automática para manter proporções */
+}
+
+/* Estilo para a navegação */
+.nav a {
+    color: inherit; /* Herda a cor do texto do header */
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 15px;
+    transition: color 0.3s ease;
+}
+
+.nav a:hover {
+    color: var(--themeColor2); /* Cor do texto ao passar o mouse */
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-btn {
+    background-color: transparent;
+    color: var(--bgColor);
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.dropdown-btn i {
+    margin-left: 5px; /* Adiciona um pequeno espaçamento entre o texto e o ícone */
+    font-size: 12px; /* Ajusta o tamanho do ícone */
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #24292e;
+    min-width: 160px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    transition: opacity 0.3s ease;
+    opacity: 0; /* Inicia o menu suspenso com opacidade 0 (oculto) */
+    pointer-events: none; /* Não permite interações com o menu oculto */
+}
+
+.dropdown-btn.active + .dropdown-content {
+    display: block;
+    opacity: 1; /* Mostra o menu suspenso com opacidade total */
+    pointer-events: auto; /* Permite interações com o menu suspenso */
+}
+
+.dropdown-btn.active i {
+    transform: rotate(180deg); /* Rotaciona o ícone de seta para baixo */
+}
+
+.dropdown-content a {
+    color: var(--themeColor);
+    padding: 10px 15px;
+    display: block;
+    text-decoration: none;
+}
+
+.dropdown-content a:hover {
+    background-color: #0f7941;
+    color: #24292e;
+}
+
+.github-link {
+    color: var(--bgColor); /* Cor do ícone */
+    font-size: 24px; /* Tamanho do ícone */
+    margin-left: 20px; /* Espaçamento à esquerda */
+    text-decoration: none; /* Remove sublinhado do link */
+    transition: color 0.3s ease; /* Transição suave da cor ao passar o mouse */
+}
+
+.github-link:hover {
+    color: var(--themeColor2); /* Cor do ícone ao passar o mouse */
+}
+
+/* Estilo para a seção .about */
+.about {
+    padding: 30px;
+    text-align: center;
+}
+
+.about h1 {
+    color: white;
+}
+
+.about p {
+    color: var(--textColor);
+}
+
+/* Estilo para as seções .section */
+.section {
+    padding-top: 50px; /* Adiciona espaçamento superior (padding) na primeira section */
+    padding: 30px;
+    background-color: var(--themeColor2);
+    margin: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.fluxo {
+    display: flex; /* Usa um layout flexível para os elementos internos */
+    justify-content: space-around; /* Distribui os elementos igualmente ao longo do eixo principal (horizontal) */
+    align-items: center; /* Centraliza os elementos verticalmente */
+}
+
+.fluxo > div {
+    text-align: center; /* Centraliza o texto dentro dos elementos <div> */
+    flex: 1; /* Permite que os elementos internos ocupem o espaço disponível */
+    margin: 10px; /* Adiciona margem entre os elementos internos */
+}
+
+.section img {
+    width: 300px; /* Ajusta a largura das imagens para ocupar toda a largura do contêiner pai */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Ajusta a intensidade da sombra */
+    border-radius: 8px; /* Adiciona bordas arredondadas às imagens */
+}
+
+
+.section h1 {
+    color: var(--themeColor);
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.section h2{
+    color: var(--themeColor);
+}
+
+.section p {
+    
+    white-space: pre-line;
+    color: var(--textColor);
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.section p strong{
+    color: #0f7941;
+}
+
+
+
+/* Estilo para os botões de produtos */
+.produtos {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.produtos button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    background-color: var(--bgColor);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none; /* Remover sublinhado */
+    display: inline-block; /* Garantir que os botões se comportem como blocos */
+}
+
+.produtos button a {
+    color: inherit; /* Herda a cor do texto do botão pai */
+    text-decoration: none; /* Remover sublinhado */
+}
+
+/* Estilo para alterar a cor de fundo ao passar o mouse nos botões */
+.produtos button:hover {
+    background-color: var(--themeColor);
+}
+
+/* Estilo para remover o foco padrão ao clicar nos botões */
+.produtos button:focus {
+    outline: none;
+}
+
+/* Estilo para remover o efeito de clique nos botões */
+.produtos button:active {
+    transform: translateY(1px);
+}
+
+/* Estilos para o contêiner de código */
+pre {
+    background-color: var(--bgColor);
+    color: var(--textColor);
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+
+pre code {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    color: var(--textColor);
+}
+
+
+/* ----FOOTER---- */
+.footer {
+    background-color: #333; /* Cor de fundo do footer */
+    color: #fff; /* Cor do texto no footer */
+    padding: 40px 0; /* Espaçamento interno (topo e base) aumentado */
+    text-align: center; /* Alinhamento do texto centralizado */
+}
+
+.footer a {
+    color: var(--themeColor); /* Cor dos links no footer */
+    text-decoration: none; /* Remover sublinhado dos links */
+}
+
+.footer strong{
+    color: var(--themeColor);
+}
+
+/* Estilos para links no footer quando hover */
+.footer a:hover {
+    text-decoration: underline; /* Sublinhar o link ao passar o mouse */
+}
+
+/* Estilos para o ícone do GitHub */
+.github-icon {
+    color: var(--themeColor); /* Cor do ícone do GitHub */
+    font-size: 24px; /* Tamanho do ícone */
+    margin-top: 10px; /* Espaçamento superior */
+}
+
+/* Estilos para o modal */
+.modal {
+    display: none; /* Oculta o modal por padrão */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content {
+    display: block;
+    margin: auto;
+    width: auto;
+    margin-top: 100px;
+    max-width: 80%; /* Defina a largura máxima do modal */
+    max-height: 80%; /* Defina a altura máxima do modal */
+}
+
+.close {
+    color: #ccc;
+    position: absolute;
+    margin-top: 70px;
+    top: 15px;
+    right: 15px;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+}

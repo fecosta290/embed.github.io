@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação - Embed.it</title>
+    <link rel="stylesheet" href="../style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo">
+                <img src="../img/logo.png" alt="Logo">
+            </a>
+            <nav class="nav">
+                <a href="./index.html">HOME</a>
+                <a href="./fluxo.html">FLUXOS</a>
+                <div class="dropdown">
+                    <button class="dropdown-btn">PRODUTOS <i class="fas fa-chevron-down"></i></button>
+                    <div class="dropdown-content">
+                        <a href="./tef.html">TEF</a>
+                        <a href="./pix.html">PIX</a>
+                        <a href="./pos.html">POS</a>
+                        <a href="./xml.html">XML</a>
+                    </div>
+                </div>
+            </nav>
+            <a href="https://github.com/org-dev-embed" class="github-link" target="_blank">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+    </header>
+
+    <section id="api" class="section">
+        <h1>PIX</h1>
+        <p>Veja como funciona nossa api para PIX</p>
+        <div class="produtos">
+            <button><a href="#imports">Dependencias</a></button>        
+            <button><a href="#configurar">Configurar</a></button>
+            <button><a href="#iniciar">Iniciar</a></button>
+            <button><a href="#base64">Pix</a></button>
+            <button><a href="#reembolso">Reembolso</a></button>
+            <button><a href="#obter-status">Obter Statusr</a></button>
+            <button><a href="#finalizar">Finalizar</a></button>
+        </div>
+    </section>
+
+    <section id="imports" class="section">
+        <h2>DEPENDENCIAS</h2>
+        <p></p>
+        <pre><code>
+            import os
+            import base64
+            import dotenv
+            import embed_lib as lib
+
+            STATUS_CODE = "resultado.status_code"
+        </code></pre>
+    </section>
+
+    <section id="configurar" class="section">
+        <h2>Configurar</h2>
+        <p></p>
+        <pre><code>
+            def configurar():
+    dotenv.load_dotenv()
+
+    PRODUTO = "pix"                         # produto de pagamento (atual pix)
+    SUB_PRODUTO = os.getenv('SUB_PRODUTO')  # fornecedor/banco/parceiro (atual 1)
+    TIMEOUT = "250"                         # timeout para consulta de status (para gerar qrcode ou reembolso)
+    API_KEY = os.getenv('API_KEY')          # fonecido pela integração
+    PROD_ID = os.getenv('PROD_ID')          # fonecido pela integração
+    PID = os.getenv('PID')                  # fonecido pela integração
+    CONTA = os.getenv('CONTA')              # fonecido pela integração
+    NOME = os.getenv('NOME')                # dado informado pelo parceiro
+    EMAIL = os.getenv('EMAIL')              # dado informado pelo parceiro
+    TELEFONE = os.getenv('TELEFONE')        # dado informado pelo parceiro
+    DOCUMENTO = os.getenv('DOCUMENTO')      # dado informado pelo parceiro
+
+    input = f"{PRODUTO};{SUB_PRODUTO};{TIMEOUT};{API_KEY};{PROD_ID};{PID};{NOME};{EMAIL};{TELEFONE};{DOCUMENTO};{CONTA}"
+    output = lib.configurar(input)
+    print(f"configurar = {output}")
+        </code></pre>
+    </section>
+
+    <section id="iniciar" class="section">
+        <h2>INICIAR TRANSAÇÃO</h2>
+        <p></p>
+        <pre><code>
+            def iniciar():
+    OPERACAO = "pix" # produto para processamento
+    output = lib.iniciar(OPERACAO)
+    print(f"iniciar = {output}")
+
+    result = lib.obter_valor(output, STATUS_CODE)
+    return result
+        </code></pre>
+    </section>
+
+    <section id="base64" class="section">
+        <h2>BASE64</h2>
+        <p></p>
+        <pre><code>
+            def base_64(valor):
+    OPERACAO = 'get_base64' # operação para realizar pagamento pix
+    VALOR = valor           # valor do pagamento em centavos
+
+    input = f"{OPERACAO};{VALOR}"
+    output = lib.processar(input)
+    print(f"processar = {output}")
+
+    data = lib.obter_valor(output, "resultado.base64")
+    image_data = base64.b64decode(data)
+    with open("base64.png", "wb") as image_file:
+        image_file.write(image_data)
+
+    result = lib.obter_valor(output, STATUS_CODE)
+    return result
+        </code></pre>
+    </section>
+
+    <section id="chave" class="section">
+        <h2>CHAVE-PIX</h2>
+        <p></p>
+        <pre><code>
+            def chave_pix(valor):
+    OPERACAO = 'get_chave_pix'  # operação para realizar pagamento pix
+    VALOR = valor               # valor do pagamento em centavos
+
+    input = f"{OPERACAO};{VALOR}"
+    output = lib.processar(input)
+    print(f"processar = {output}")
+
+    data = lib.obter_valor(output, "resultado.chave_pix")
+    with open('chave_pix.txt', 'w') as arquivo:   
+        arquivo.write(data)
+
+    result = lib.obter_valor(output, STATUS_CODE)
+    return result
+        </code></pre>
+    </section>
+
+    <section id="reembolso" class="section">
+        <h2>REEMBOLSO</h2>
+        <p></p>
+        <pre><code>
+            def reembolso(tid=None, valor=None):
+    OPERACAO = 'get_reembolso'  # operação para realizar reembolso pix
+
+    # realiza o reembolso de uma transação específica (tid e valor) ou realiza
+    # o reembolso da última transação
+    if tid != None and valor != None:
+        input = f"{OPERACAO};{valor};{tid}"
+    else:
+        input = OPERACAO
+    
+    output = lib.processar(input)
+    print(f"processar = {output}")
+
+    result = lib.obter_valor(output, STATUS_CODE)
+    return result
+        </code></pre>
+    </section>
+
+    <section id="obter-status" class="section">
+        <h2>OBTER-STATUS</h2>
+        <p></p>
+        <pre><code>
+            def status(tid=None):
+            OPERACAO = 'get_status' # obtem o status do pagamento
+            TID = tid               # tid (identificador) da transação - opcional
+        
+            # verifica o tid pois é opcional
+            if tid == None:
+                input = OPERACAO
+            else:
+                input = f"{OPERACAO};{TID}"
+        
+            output = lib.processar(input)
+            print(f"processar = {output}")
+        
+            result = lib.obter_valor(output, STATUS_CODE)
+            return result
+        </code></pre>
+    </section>
+
+    <section id="finalizar" class="section">
+        <h2>FINALIZAR TRANSAÇÃO</h2>
+        <p></p>
+        <pre><code>
+            def finalizar():
+    # apaga os arquivos auxiliares para a demo
+    if os.path.exists("base64.png"):
+        os.remove("base64.png")    
+    if os.path.exists("chave_pix.txt"):
+        os.remove("chave_pix.txt")
+
+    OPERACAO = '' # finaliza a API
+    output = lib.finalizar(OPERACAO)
+    print(f"finalizar = {output}")
+
+    result = lib.obter_valor(output, "codigo")
+    return result
+        </code></pre>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2024 - <strong><a href="https://embed.it">Embed.it</a></strong>. Todos os direitos reservados.</p>
+            </p>
+        </div>
+    </footer>
+
+    <script src="../src/index.js"></script>
+</body>
+</html>

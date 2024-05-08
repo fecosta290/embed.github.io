@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação - Embed.it</title>
+    <link rel="stylesheet" href="../style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo">
+                <img src="../img/logo.png" alt="Logo">
+            </a>
+            <nav class="nav">
+                <a href="./index.html">HOME</a>
+                <a href="./fluxo.html">FLUXOS</a>
+                <div class="dropdown">
+                    <button class="dropdown-btn">PRODUTOS <i class="fas fa-chevron-down"></i></button>
+                    <div class="dropdown-content">
+                        <a href="./tef.html">TEF</a>
+                        <a href="./pix.html">PIX</a>
+                        <a href="./pos.html">POS</a>
+                        <a href="./xml.html">XML</a>
+                    </div>
+                </div>
+            </nav>
+            <a href="https://github.com/org-dev-embed" class="github-link" target="_blank">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+    </header>
+
+    <section id="api" class="section">
+        <h1>TEF</h1>
+        <p>Veja como funciona nossa api para TEF</p>
+        <div class="produtos">
+            <button><a href="#imports">Dependencias</a></button>        
+            <button><a href="#configurar">Configurar</a></button>
+            <button><a href="#iniciar">Iniciar</a></button>
+            <button><a href="#debito">Debito</a></button>
+            <button><a href="#credito">Credito</a></button>
+            <button><a href="#obter-status">Obter Statusr</a></button>
+            <button><a href="#abortar">Abortar Transação</a></button>
+            <button><a href="#cancelar">Cancelar Transação</a></button>
+            <button><a href="#finalizar">Finalizar</a></button>
+        </div>
+    </section>
+    
+    <section id="imports" class="section">
+        <h2>DEPENDENCIAS</h2>
+        <p>Vamos começar importando as dependencias necessarias para que o codigo funcione normalmente</p>
+        <pre><code>
+            from libembed import configurar, iniciar, processar, finalizar, obter_valor
+            import json
+            import os
+            import warnings
+            from dotenv import load_dotenv
+            from threading import Thread
+            from tkinter import (
+                Button,
+                Tk,
+                Label,
+                Frame,
+                Text,
+                StringVar,
+                Scrollbar,
+                VERTICAL,
+                NSEW,
+                NS,
+                W,
+                FLAT,
+                SUNKEN,
+                END,
+                RAISED,
+            )
+            
+            warnings.filterwarnings("ignore", category=DeprecationWarning)
+        </code></pre>
+    
+        <p><strong>OBS: </strong>Algumas dependencias são apenas para a criação das telas</p>
+    </section>
+    
+    <section id="configurar" class="section">
+        <h2>CONFIGURAR</h2>
+        <p>Lembre-se de alterar as configurações no arquivo .env</p>
+        <p><strong>OBS: </strong>As informações serão passadas pela equipe de integração</p>
+        <pre><code>
+            
+            def e_configurar(self):
+        self.lbl_operator_text.set("configurando produto tef")
+        
+        load_dotenv()
+
+        PRODUTO = "tef"                         
+        TIMEOUT = os.getenv('TIMEOUT')          
+        SUB_PRODUTO = os.getenv('SUB_PRODUTO')  
+        SENHA_ADM = os.getenv('SENHA_ADM')
+        TOKEN_AUTORIZACAO = os.getenv('TOKEN_AUTORIZACAO')  # token de acesso
+        CODIGO_ATIVACAO = os.getenv('CODIGO_ATIVACAO')
+        NOME_APP = os.getenv('APP_NOME')
+        VERSAO_APP = os.getenv('APP_VERSAO')
+        TEXTO_PINPAD = os.getenv('TEXTO_PINPAD')
+
+        # DESCOMENTE UMA DAS OPCOES PARA TESTAR: JSON OU META PARAMETROS
+
+        # JSON 
+        input_data = {
+            "configs": {
+                "produto": PRODUTO,                                        
+                "sub_produto": SUB_PRODUTO,                                       
+                "infos": {
+                    "timeout": TIMEOUT,
+                    "senha_adm": SENHA_ADM,
+                    "codigo_ativacao": CODIGO_ATIVACAO,
+                    "token_autorizacao": TOKEN_AUTORIZACAO,
+                    "nome_app": NOME_APP,
+                    "versao_app": VERSAO_APP,
+                    "texto_pinpad": TEXTO_PINPAD,
+                }
+            }
+        }
+        input_json = json.dumps(input_data)
+        res = configurar(input_json)
+
+        # META PARAMETROS
+        # input_data = f"{PRODUTO};{SUB_PRODUTO};{TIMEOUT};{SENHA_ADM};{CODIGO_ATIVACAO};{TOKEN_AUTORIZACAO};{NOME_APP};{VERSAO_APP};{TEXTO_PINPAD}"
+        # res = configurar(input_data)
+
+        self.write_logs("CONFIGURAR")
+        self.write_logs(res)
+
+        result = obter_valor(res, "mensagem")
+        return result
+
+        </code></pre>
+    </section>
+    
+    <section id="iniciar" class="section">
+        <h2>INICIAR</h2>
+        <p></p>
+        <pre><code>
+            def e_iniciar(self):
+        self.lbl_operator_text.set("iniciando tef")
+
+        OPERACAO = "tef" # produto que será executado (atual pos)
+
+        # DESCOMENTE UMA DAS OPCOES PARA TESTAR: JSON OU META PARAMETROS
+
+        # JSON
+        # input_data = {
+        #     "iniciar": {
+        #         "operacao": OPERACAO
+        #     }
+        # }
+        # input_json = json.dumps(input_data)
+        # res = iniciar(input_json)
+
+        # META PARAMETROS
+        res = iniciar(OPERACAO)
+
+        self.write_logs("INICIAR")
+        self.write_logs(res)
+
+        return res
+        </code></pre>
+    </section>
+    
+    <section id="debito" class="section">
+        <h2>DEBITO</h2>
+        <p></p>
+        <pre><code>
+            def e_debito(self):
+        self.lbl_operator_text.set("transacao débito de 19,00 reais")
+
+        OPERACAO    = 'debito'      
+        VALOR       = "1900"        
+
+        # DESCOMENTE UMA DAS OPCOES PARA TESTAR: JSON OU META PARAMETROS
+
+        # JSON 
+        input_data = {
+            "processar": {
+                "operacao": OPERACAO,       # debito
+                "valor": VALOR              # valor sempre em centavos
+            }
+        }
+        input_json = json.dumps(input_data)
+        res = processar(input_json)
+
+        # META PARAMETROS
+        # input_data = f"{OPERACAO};{VALOR}"
+        # res = processar(input_data)
+
+        self.write_logs("PROCESSAR")
+        self.write_logs(res)
+        
+        status_code = obter_valor(res, "resultado.status_code")
+        message = obter_valor(res, "resultado.status_message")
+
+        if status_code == "1":
+            self.lbl_operator_text.set(message)
+            self.root.update()
+        else:
+            print("error in response ")
+            self.lbl_operator_text.set("Ocorreu algum erro")
+
+        message = obter_valor(res, "mensagem")
+        return message
+        </code></pre>
+    </section>
+    
+    <section id="credito" class="section">
+        <h2>CREDITO</h2>
+        <p></p>
+        <pre><code>
+            def e_credito(self):
+        self.lbl_operator_text.set("transacao crédito de 250,00 reais")
+
+        OPERACAO        = 'credito'     
+        VALOR           = "25000"       
+        PARCELAS        = "1"           
+        FINANCIAMENTO   = "0"           
+
+        # DESCOMENTE UMA DAS OPCOES PARA TESTAR: JSON OU META PARAMETROS
+
+        # JSON 
+        # input_data = {
+        #     "processar": {
+        #         "operacao": OPERACAO,           # credito 
+        #         "valor": VALOR,                 # em centavos
+        #         "parcelas": PARCELAS,           # 1 a 99
+        #         "financiamento": FINANCIAMENTO, # 0 - a vista; 1 - estabelecimento; 2 - administradora
+        #     }
+        # }
+        # input_json = json.dumps(input_data)
+        # res = processar(input_json)
+
+        # META PARAMETROS
+        input_data = f"{OPERACAO};{VALOR};{PARCELAS};{FINANCIAMENTO}"
+        res = processar(input_data)
+
+        self.write_logs("PROCESSAR")
+        self.write_logs(res)
+        
+        status_code = obter_valor(res, "resultado.status_code")
+        message = obter_valor(res, "resultado.status_message")
+
+        if status_code == "1":
+            self.lbl_operator_text.set(message)
+            self.root.update()
+        else:
+            print("error in response ")
+            self.lbl_operator_text.set("Ocorreu algum erro")
+
+        message = obter_valor(res, "mensagem")
+        return message
+
+        </code></pre>
+    </section>
+    
+    <section id="obter-status" class="section">
+        <h2>OBTER STATUS</h2>
+        <p></p>
+        <pre><code>
+            def e_status(self):
+        self.lbl_operator_text.set("consultando status")
+
+        OPERACAO = 'get_status' # obtem o status do pagamento do qrcode
+
+        # DESCOMENTE UMA DAS OPCOES PARA TESTAR: JSON OU META PARAMETROS
+
+        # JSON
+        input_data = {
+            "processar": {
+                "operacao": OPERACAO
+            }
+        }
+        input_json = json.dumps(input_data)
+        res = processar(input_json)
+    
+        # META PARAMETROS
+        # res = processar(OPERACAO)
+
+        self.write_logs("PROCESSAR")
+        self.write_logs(res)
+        
+        result = obter_valor(res, "resultado.status_code")
+        return result
+        </code></pre>
+    </section>
+    
+    <section id="abortar" class="section">
+        <h2>ABORTAR TRANSAÇÃO</h2>
+        <p></p>
+        <pre><code>
+            def e_abortar(self):
+        self.lbl_operator_text.set("abortando operacao")
+
+        OPERACAO = 'abortar' # obtem o status do pagamento do qrcode
+
+        # DESCOMENTE UMA DAS OPCOES PARA TESTAR: JSON OU META PARAMETROS
+
+        # JSON
+        input_data = {
+            "processar": {
+                "operacao": OPERACAO
+            }
+        }
+        input_json = json.dumps(input_data)
+        res = processar(input_json)
+    
+        # META PARAMETROS
+        # res = processar(OPERACAO)
+
+        self.write_logs("PROCESSAR")
+        self.write_logs(res)
+        self.root.update()
+
+        result = obter_valor(res, "resultato.status_code")
+        return result
+        </code></pre>
+    </section>
+
+    <section id="cancelar" class="section">
+        <h2>CANCELAR TRANSAÇÃO</h2>
+        <p></p>
+        <pre><code>
+            def e_cancelar(self): 
+        self.lbl_operator_text.set("cancelando transação")
+
+        OPERACAO        = 'cancelar'     
+        VALOR           = "4500"       
+        DATA            = "20032024"           
+        NSU             = "000000060"           
+
+        # DESCOMENTE UMA DAS OPCOES PARA TESTAR: JSON OU META PARAMETROS
+
+        # JSON 
+        # input_data = {
+        #     "processar": {
+        #         "operacao": OPERACAO,           # credito 
+        #         "valor": VALOR,                 # em centavos
+        #         "data": DATA,                   # DDMMAAAA - 
+        #         "nsu": NSU,                     # igual está no comprovante recebido com 9 caracteres
+        #     }
+        # }
+        # input_json = json.dumps(input_data)
+        # res = processar(input_json)
+
+        # META PARAMETROS
+        input_data = f"{OPERACAO};{VALOR};{DATA};{NSU}"
+        res = processar(input_data)
+
+        self.write_logs("PROCESSAR")
+        self.write_logs(res)
+        
+        status_code = obter_valor(res, "resultado.status_code")
+        message = obter_valor(res, "resultado.status_message")
+
+        if status_code == "1":
+            self.lbl_operator_text.set(message)
+            self.root.update()
+        else:
+            print("error in response ")
+            self.lbl_operator_text.set("Ocorreu algum erro")
+
+        message = obter_valor(res, "mensagem")
+        return message
+        </code></pre>
+    </section>
+
+    <section id="finalizar" class="section">
+        <h2>FINALIZAR TRANSAÇÃO</h2>
+        <p></p>
+        <pre><code>
+            def e_finalizar(self, confirmar):
+        self.lbl_operator_text.set("finalizando operacao")
+
+        OPERACAO = 'confirmar'  # realiza a confirmação da transacao
+        VALOR    = confirmar    # 1 - confirmar / 0 - desfazer
+
+        # DESCOMENTE UMA DAS OPCOES PARA TESTAR: JSON OU META PARAMETROS
+
+        # JSON
+        input_data = {
+            "finalizar": {
+                "operacao": OPERACAO,
+                "valor": VALOR
+            }
+        }
+        input_json = json.dumps(input_data)
+        res = finalizar(input_json)
+    
+        # META PARAMETROS
+        # res = processar(OPERACAO)
+        # input_data = f"{OPERACAO};{VALOR}"
+        # res = processar(input_data)
+
+        self.write_logs("FINALIZAR")
+        self.write_logs(res)
+        self.root.update()
+        </code></pre>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2024 - <strong><a href="https://embed.it">Embed.it</a></strong>. Todos os direitos reservados.</p>
+            </p>
+        </div>
+    </footer>
+
+    <script src="../src/index.js"></script>
+</body>
+</html>
+
+
+
+

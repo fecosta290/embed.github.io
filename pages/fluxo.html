@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação - Embed.it</title>
+    <link rel="stylesheet" href="../style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo">
+                <img src="../img/logo.png" alt="Logo">
+            </a>
+            <nav class="nav">
+                <a href="./index.html">HOME</a>
+                <a href="./fluxo.html">FLUXOS</a>
+                <div class="dropdown">
+                    <button class="dropdown-btn">PRODUTOS <i class="fas fa-chevron-down"></i></button>
+                    <div class="dropdown-content">
+                        <a href="./tef.html">TEF</a>
+                        <a href="./pix.html">PIX</a>
+                        <a href="./pos.html">POS</a>
+                        <a href="./xml.html">XML</a>
+                    </div>
+                </div>
+            </nav>
+            <a href="https://github.com/org-dev-embed" class="github-link" target="_blank">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+    </header>
+
+     <section id="geral" class="section">
+        <h2>fluxo geral</h2>
+        <p>Vamos definir o fluxo que deve ser seguido para que sua implementação seja realizada seguindo as melhores práticas no uso da nossa API</p>
+        <img src="../img/geral.png" alt="geral" onclick="openModal(this)">
+     </section>
+
+     <section id="pix" class="section">
+        <h2>PIX</h2>
+        <div class="fluxo">
+            <div class="base64">
+                <p><strong>Obter base 64</strong></p>  
+                <img src="../imgFluxos/pix/base64.png" alt="base64"  onclick="openModal(this)">
+            </div>
+            <div class="chavePix">
+                <p><strong>chave pix</strong></p>
+                <img src="../imgFluxos/pix/chvPix.png" alt="chavePix" onclick="openModal(this)">
+            </div>
+            <div class="reembolso">
+                <p><strong>reembolso</strong></p>
+                <img src="../imgFluxos/pix/reembolso.png" alt="reembolso" onclick="openModal(this)">
+                
+            </div>
+            <div class="status">
+                <p><strong>status</strong></p>
+                <img src="../imgFluxos/pix/status.png" alt="status" onclick="openModal(this)">
+            </div>
+        </div>
+        
+     </section>
+
+     <section id="pos" class="section">
+        <h2>POS</h2>
+        <div class="fluxo">
+            <div class="credito">
+                <p><strong>credito</strong></p>
+                <img src="../imgFluxos/pos/credito.png" alt="credito" onclick="openModal(this)">
+            </div>
+            <div class="debito">
+                <p><strong>debito</strong></p>
+                <img src="../imgFluxos/pos/debito.png" alt="debito" onclick="openModal(this)">
+            </div>
+        </div>
+     </section>
+
+     <section id="tef" class="section">
+        <h2>TEF</h2>
+        <div class="fluxo">
+            <div class="credito">
+                <p><strong>credito</strong></p>
+                <img src="../imgFluxos/tef/credito.png" alt="credito" onclick="openModal(this)">
+            </div>
+            <div class="debito">
+                <p><strong>debito</strong></p>
+                <img src="../imgFluxos/tef/debito.png" alt="debito" onclick="openModal(this)">
+            </div>
+            <div class="cancelar">
+                <p><strong>debito</strong></p>
+                <img src="../imgFluxos/tef/cancelar.png" alt="cancelar" onclick="openModal(this)">
+            </div>
+        </div>
+     </section>
+
+     <div id="myModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImage">
+      </div>
+
+      <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2024 - <strong><a href="https://embed.it">Embed.it</a></strong>. Todos os direitos reservados.</p>
+            </p>
+        </div>
+    </footer>
+
+    <script src="../src/index.js"></script>
+    <script src="../src/fluxos.js"></script>
+</body>
+</html>

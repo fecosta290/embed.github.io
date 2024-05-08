@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação - Embed.it</title>
+    <link rel="stylesheet" href="../style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo">
+                <img src="../img/logo.png" alt="Logo">
+            </a>
+            <nav class="nav">
+                <a href="./index.html">HOME</a>
+                <a href="./fluxo.html">FLUXOS</a>
+                <div class="dropdown">
+                    <button class="dropdown-btn">PRODUTOS <i class="fas fa-chevron-down"></i></button>
+                    <div class="dropdown-content">
+                        <a href="./tef.html">TEF</a>
+                        <a href="./pix.html">PIX</a>
+                        <a href="./pos.html">POS</a>
+                        <a href="./xml.html">XML</a>
+                    </div>
+                </div>
+            </nav>
+            <a href="https://github.com/org-dev-embed" class="github-link" target="_blank">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+    </header>
+
+    <section id="introduction" class="about">
+        <h1>Conheçendo a API</h1>
+        <p>Uma solução robusta e versátil para integração de pagamentos e transações eletrônicas utilizando TEF (Transferência Eletrônica de Fundos), POS (point of Sale), PIX e XML. Nossa API oferece uma série de recursos e métodos poderosos, cuidadosamente projetados para simplificar e otimizar o processo de integração de sistemas de pagamento em sua aplicação.</p>
+    </section>
+
+    <section id="components" class="section">
+        <h1>Nossos Produtos</h1>
+        <p>Antes de tudo, é importante saber que precisaremos ter o python3 instalado na maquina!.</p>
+        <div class="produtos">
+            <button id="tef" onclick="changeCode('tef')">TEF</button>
+            <button id="pos" onclick="changeCode('pos')">POS</button>
+            <button id="pix" onclick="changeCode('pix')">PIX</button>
+            <button id="xml" onclick="changeCode('xml')">XML</button>
+        </div>
+        <p>Começe clonando o repositorio</p>
+        <pre id="codeSnippet"><code id="repoCommand">// DIGITE ESSA LINHA DE COMANDO NO SEU TERMINAL</code></pre>
+        <p>Acesse o diretório e modifique o arquivo .env.example, renomeando para .env e colocando os valores passados pelo time de integração</p>
+        <p>Após isto, executar o comando</p>
+        <pre><code>python3 embed_ui.py</code></pre>
+     </section>
+        
+     <section id="api" class="section">
+        <h1>Embedar</h1>
+        <p>Veja nossa referencia completa para a lib</p>
+        <div class="produtos">
+            <button><a href="#dll">DLL</a></button>        
+            <button><a href="#obter-valor">Obter Valor</a></button>
+            <button><a href="#configurar">Configurar</a></button>
+            <button><a href="#iniciar">Iniciar</a></button>
+            <button><a href="#iniciar">Processar</a></button>
+            <button><a href="#finalizar">Finalizar</a></button>
+        </div>
+    </section>
+    <section id="dll" class="section">
+        <h2>DLL</h2>
+        <p>
+            Este trecho de código em Python é responsável por carregar uma biblioteca compartilhada (DLL no Windows ou SO no Linux) utilizando a biblioteca ctypes, dependendo do sistema operacional e arquitetura em que o código está sendo executado.</p>
+        <pre><code>
+            import ctypes
+            import platform
+            
+            if platform.system() == 'Windows':
+                path = 'win/'
+                extension = '.dll'
+            else:
+                path = 'lin/'
+                extension = '.so'
+            
+            if platform.architecture()[0] == "64bit":
+                # name = 'lib-embed-x64'
+                name = 'lib-embed-x64'
+            else:
+                name = 'lib-embed-x86'
+                
+            # load library
+            ffi = ctypes.cdll.LoadLibrary(path + name + extension)
+            
+        </code></pre>
+    </section>
+
+    <section id="obter-valor" class="section">
+        <h2>Obter Valor</h2>
+        <p>método responsável por buscar um valor contido em uma chave de um json valido</p>
+        <p><strong>OBTER_VALOR</strong> <code>(embed_obter_valor)</code></p>
+        <pre><code>
+            '''
+            OUTPUT 
+        
+                exemplo: 
+        
+                json =
+                    "{ 
+                        "key1": "value1", 
+                        "key2": {
+                            "key21": "value21",
+                            "key22": "value22",
+                            "key23": "value23",
+                            "key24": "value24",
+                            "key25": "value25",
+                        }
+                    }"
+        
+                res1 = embed_obter_valor(json, "key1")
+                logo, res1 = "value1"
+        
+                res2 = embed_obter_valor(json, "key2")
+                logo, res2 = "{ "key21": "value21", "key22": "value22", "key23": "value23", "key24": "value24", "key25": "value25" }
+        
+                res23 = embed_obter_valor(json, "key2")
+                logo, res23 = "value23"
+        '''
+        def obter_valor(json, key):
+            fn = ffi.embed_obter_valor
+            fn.restype = ctypes.c_char_p
+            fn.argtypes = [ctypes.c_char_p]
+            json = ctypes.c_char_p(bytes(json, 'utf-8'))
+            key = ctypes.c_char_p(bytes(key, 'utf-8'))
+            return fn(json, key).decode('utf-8')
+        </code></pre>
+    </section>
+
+    <section id="configurar" class="section">
+        <h2>Configurar</h2>
+        <p>Método responsável pela configuração dos produtos embed:
+            - pix (atual)
+            - pos (implementação futura)
+            - tef (implementação futura)
+            - etc...
+
+        deve ser chamada somente no momento do setup, ou quando houver uma atualização de informações.
+        as informações são persistidas em um arquivo seguro, que durante a execução da lib consulta o que for necessário.
+
+    </p>
+        <p><strong>CONFIGURAR</strong> <code>(embed_configurar)</code></p>
+        <pre><code>
+            '''
+            INPUT
+        
+                este método conta com duas formas de entrada:
+                    - metaparametros: as informações são adicionadas a uma string, separadas por ';'
+                        ex: "X;Y;Z;1;;3" 
+                        obs: quando não houver valor, basta deixar o campo vazio (2)
+                    - json: as informações são adicionadas a uma string, no formato json
+                        ex: json =  
+                        "{
+                            "configs": {
+                                "produto": "X",
+                                "sub_produto: "Y",
+                                "infos": {
+                                    // informações referentes ao produto que estiver usando
+                                    // cada um dos produtos e sub produtos terá sua entrada personalizada neste primeiro momento...
+                                }
+                            }
+                        }"
+        
+            OUTPUT 
+        
+                a saída é uma string no formato json (sempre) e para obter as informações basta deserializar,
+                ou fazer o uso do método 'embed_obter_valor'
+        
+                exemplo:
+        
+                result = "{
+                    "codigo": code1,
+                    "mensagem": "mensagem1",
+                    "resultado": {
+                        // informações de saída referentes ao produto e sub produto que estiver usando
+                    }
+                }"
+        '''
+        def configurar(input):
+            fn = ffi.embed_configurar
+            fn.restype = ctypes.c_char_p
+            fn.argtypes = [ctypes.c_char_p]
+            input = ctypes.c_char_p(bytes(input, 'utf-8'))
+            return fn(input).decode('utf-8')
+        </code></pre>
+    </section>
+
+    <section id="iniciar" class="section">
+        <h2>Iniciar Operação</h2>
+        <p>método responsável pela inicialização do produto que for realizar uma operação</p>
+        <p><strong>INICIAR</strong> <code>(embed_iniciar)</code></p>
+        <pre><code>
+            INPUT
+
+            este método conta com duas formas de entrada:
+                - metaparametros: as informações são adicionadas a uma string, separadas por ';'
+                    ex: "prod1" 
+                - json: as informações são adicionadas a uma string, no formato json
+                    ex: json =  
+                    "{
+                        "iniciar": {
+                            "operacao": "prod1",
+                        }
+                    }"
+            
+        OUTPUT 
+    
+            a saída é uma string no formato json (sempre) e para obter as informações basta deserializar,
+            ou fazer o uso do método 'embed_obter_valor'
+    
+            exemplo:
+    
+            result = "{
+                "codigo": code1,
+                "mensagem": "mensagem1",
+                "resultado": {
+                    // informações de saída referentes ao produto e sub produto que estiver usando
+                }
+            }"
+    '''
+    def iniciar(input):
+        fn = ffi.embed_iniciar
+        fn.restype = ctypes.c_char_p
+        fn.argtypes = [ctypes.c_char_p]
+        input = ctypes.c_char_p(bytes(input, 'utf-8'))
+        return fn(input).decode('utf-8')
+        </code></pre>
+    </section>
+
+    <section id="processar" class="section">
+        <h2>Processar Transação</h2>
+        <p>método responsável pelo processamento das operações desenvolvidas para os produtos. 
+            este método deve ser chamado para iniciar o processamento e depois em alguns casos
+            em loop para consultar status, realizar outras operações até que o retorno seja dado
+            como concluido</p>
+        <p><strong>PROCESSAR</strong> <code>(embed_processar)</code></p>
+        <pre><code>
+            INPUT
+
+            este método conta com duas formas de entrada:
+            - metaparametros: as informações são adicionadas a uma string, separadas por ';'
+                ex: "operacao1;X;Y;Z" 
+            - json: as informações são adicionadas a uma string, no formato json
+                ex: json =  
+                "{
+                    "processar": {
+                        "operacao": "operacao1",
+                        "valor1": "X",
+                        "valor2": "Y",
+                        "valor3": "Z"
+                    }
+                }"
+    
+        OUTPUT 
+    
+            a saída é uma string no formato json (sempre) e para obter as informações basta deserializar,
+            ou fazer o uso do método 'embed_obter_valor'
+    
+            exemplo:
+    
+            result = "{
+                "codigo": code1,
+                "mensagem": "mensagem1",
+                "resultado": {
+                    // informações de saída referentes ao produto e sub produto que estiver usando
+                }
+            }"
+    '''
+    def processar(input):
+        fn = ffi.embed_processar
+        fn.restype = ctypes.c_char_p
+        fn.argtypes = [ctypes.c_char_p]
+        input = ctypes.c_char_p(bytes(input, 'utf-8'))
+        return fn(input).decode('utf-8')
+        </code></pre>
+    </section>
+
+    <section id="finalizar" class="section">
+        <h2>Finalizar transação</h2>
+        <p>método responsável por realizar a finalização do processamento do produto em uso</p>
+        <p><strong>FINALIZAR</strong>(embed_finalizar)</p>
+        <pre><code>
+            OUTPUT 
+
+        a saída é uma string no formato json (sempre) e para obter as informações basta deserializar,
+        ou fazer o uso do método 'embed_obter_valor'
+
+        exemplo:
+
+        result = "{
+            "codigo": code1,
+            "mensagem": "mensagem1",
+            "resultado": {
+                // informações de saída referentes ao produto e sub produto que estiver usando
+            }
+        }"
+'''
+def finalizar(input):
+    fn = ffi.embed_finalizar
+    fn.restype = ctypes.c_char_p
+    fn.argtypes = [ctypes.c_char_p]
+    input = ctypes.c_char_p(bytes(input, 'utf-8'))
+    return fn(input).decode('utf-8')
+        </code></pre>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2024 - <strong><a href="https://embed.it">Embed.it</a></strong>. Todos os direitos reservados.</p>
+            </p>
+        </div>
+    </footer>
+
+    <script src="../src/index.js"></script>
+</body>
+</html>
